@@ -12,10 +12,6 @@ class DataFrame:
 		------
 		data: dict
 			dict with string keys and numpy 1D array as values
-
-		Returns
-		-------
-		A DataFrame
 		"""
 
 		self._check_columns_type(data)
@@ -54,3 +50,17 @@ class DataFrame:
 				converted_data[key] = data[key]
 
 		return converted_data
+
+	def __len__(self):
+		"""
+		An implementation of python special function.
+		Count no of rows of dataframe
+
+		Returns
+		------
+		int: Total no. of rows in our dataframe
+		"""
+		values = self._data.values()
+		length = len(next(iter(values)))
+
+		return length

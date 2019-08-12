@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-from numpy.testing import assert_array_equal
 import analytica as alt
 
 a = np.array(['a', 'b', 'c'])
@@ -45,3 +44,6 @@ class TestDataFrameCreation:
         assert df._data['c'].dtype.kind == c.dtype.kind
         assert df._data['d'].dtype.kind == d.dtype.kind
         assert df._data['e'].dtype.kind == e.dtype.kind
+
+    def test_len(self):
+        assert len(df) == 3
