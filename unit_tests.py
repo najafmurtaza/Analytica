@@ -21,3 +21,11 @@ class TestDataFrameCreation:
         # correct construction. no error
         alt.DataFrame({'a': np.array([1]), 
                        'b': np.array([1])})
+    
+    def test_array_length(self):
+        with pytest.raises(ValueError):
+            alt.DataFrame({'a': np.array([1, 2]), 
+                           'b': np.array([1])})
+        # correct construction. no error                           
+        alt.DataFrame({'a': np.array([1, 2]), 
+                        'b': np.array([5, 10])})

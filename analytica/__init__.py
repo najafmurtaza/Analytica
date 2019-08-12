@@ -5,9 +5,23 @@ import numpy as np
 class DataFrame:
 
 	def __init__(self, data):
-		self._check_column_types(data)
+		"""
+		Create 2D dataframe from dict
 
-	def _check_column_types(self, data):
+		Params
+		------
+		data: dict
+			dict with string keys and numpy 1D array as values
+
+		Returns
+		-------
+		A DataFrame
+		"""
+
+		self._check_columns_type(data)
+		self._check_columns_length(data)
+
+	def _check_columns_type(self, data):
 		if not isinstance(data, dict):
 			raise TypeError("Data must be dictionary")
 		
@@ -22,3 +36,10 @@ class DataFrame:
 				raise TypeError("Values must be numpy 1D arrays")
 			if single_val.ndim != 1:
 				raise ValueError("Arrays dim must be equal to 1")
+
+	def _check_columns_length(self, data):
+		values = data.values()
+		length = len(next(iter(values)))
+		for index, single_val in enumerate(values):
+			if len(single_val) != length:
+				raise ValueError("Length of columns should be same")
