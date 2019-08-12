@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-import Analytica as alt
+import analytica as alt
 
 class TestDataFrameCreation:
 
