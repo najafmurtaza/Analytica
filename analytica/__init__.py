@@ -20,6 +20,7 @@ class DataFrame:
 
 		self._check_columns_type(data)
 		self._check_columns_length(data)
+		self._data = self._convert_unicode_to_object(data)
 
 	def _check_columns_type(self, data):
 		if not isinstance(data, dict):
@@ -43,3 +44,13 @@ class DataFrame:
 		for index, single_val in enumerate(values):
 			if len(single_val) != length:
 				raise ValueError("Length of columns should be same")
+
+	def _convert_unicode_to_object(self, data):
+		converted_data = {}
+		for key, val in data.items():
+			if val.dtype.kind == 'U':
+				converted_data[key] = data[key].astype('O')
+			else:
+				converted_data[key] = data[key]
+
+		return converted_data
