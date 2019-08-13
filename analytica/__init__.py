@@ -76,3 +76,28 @@ class DataFrame:
 		"""
 		
 		return list(self._data.keys())
+
+	@columns.setter
+	def columns(self, columns):
+		"""
+		Set columns name of dataframe
+
+		Params
+		------
+		list: A list of new columns names with same length as of original
+		"""
+
+		if not isinstance(columns, list):
+			raise TypeError("columns must be of type 'list'")
+
+		if len(columns) != len(self._data.keys()):
+			raise ValueError("new columns must have same length as original columns")
+
+		for i in columns:
+			if not isinstance(i, str):
+				raise TypeError("column name must be of type 'string'")
+		
+		if len(columns) != len(set(columns)):
+			raise ValueError("All columns names must be unique")
+
+		self._data = dict(zip(columns, self._data.values()))
