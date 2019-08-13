@@ -64,3 +64,15 @@ class DataFrame:
 		length = len(next(iter(values)))
 
 		return length
+
+	@property 
+	def columns(self):
+		"""
+		Property method to get columns names as list
+
+		Returns
+		-------
+		list: columns names as list
+		"""
+		
+		return list(self._data.keys())

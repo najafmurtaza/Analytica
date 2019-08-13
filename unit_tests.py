@@ -47,3 +47,6 @@ class TestDataFrameCreation:
 
     def test_len(self):
         assert len(df) == 3
+
+    def test_columns(self):
+        assert df.columns == ['a', 'b', 'c', 'd', 'e']
