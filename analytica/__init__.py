@@ -101,3 +101,15 @@ class DataFrame:
 			raise ValueError("All columns names must be unique")
 
 		self._data = dict(zip(columns, self._data.values()))
+
+	@property
+	def shape(self):
+		"""
+		Get no of rows and columns of dataframe
+
+		Returns
+		-------
+		tuple: tuple of (Rows, cols)
+		"""
+
+		return (len(next(iter(self._data.values()))), len(self._data.keys()))

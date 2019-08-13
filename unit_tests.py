@@ -70,3 +70,6 @@ class TestDataFrameCreation:
         # set it back
         df.columns = ['a', 'b', 'c', 'd', 'e']
         assert df.columns == ['a', 'b', 'c', 'd', 'e']
+
+    def test_shape(self):
+        assert df.shape == (3, 5)
