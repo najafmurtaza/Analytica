@@ -86,7 +86,8 @@ class TestDataFrameCreation:
     
     def test_dtypes(self):
         cols = np.array(['a', 'b', 'c', 'd', 'e'], dtype='O')
-        dtypes = np.array([a.astype('O').dtype, b.dtype, c.dtype, d.dtype, e.dtype], dtype='O')
+        dtypes = np.array([str(a.astype('O').dtype), str(b.dtype),
+                            str(c.dtype), str(d.dtype), str(e.dtype)], dtype='O')
         
         df_answer = alt.DataFrame({'Column Name': cols,
                                     'Data Type': dtypes})

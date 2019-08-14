@@ -126,9 +126,9 @@ class DataFrame:
 
 		data_types = []
 		for val in self._data.values():
-			data_types.append(val.dtype)
-		
+			data_types.append(str(val.dtype))
 		dtypes_dict = {'Column Name':np.array(self.columns), 'Data Type':np.array(data_types)}
+
 		return DataFrame(dtypes_dict)
 
 	@property
@@ -143,3 +143,67 @@ class DataFrame:
 		
 		# Casting to list becuase using iterables in stack will be deprecated after numpy 1.16
 		return np.column_stack(list(self._data.values()))
+
+	def _repr_html_(self):
+		"""
+		Used to create a string of HTML to nicely display the DataFrame
+		in a Jupyter Notebook. Different string formatting is used for
+		different data types.
+		"""
+
+		html = '<table><thead><tr><th></th>'
+		for col in self.columns:
+			html += f"<th>{col:10}</th>"
+
+		html += '</tr></thead>'
+		html += "<tbody>"
+
+		only_head = False
+		num_head = 10
+		num_tail = 10
+		if len(self) <= 20:
+			only_head = True
+			num_head = len(self)
+
+		for i in range(num_head):
+			html += f'<tr><td><strong>{i}</strong></td>'
+			for col, values in self._data.items():
+				kind = values.dtype.kind
+				if kind == 'f':
+					html += f'<td>{values[i]:10.3f}</td>'
+				elif kind == 'b':
+					html += f'<td>{values[i]}</td>'
+				elif kind == 'O':
+					v = values[i]
+					if v is None:
+						v = 'None'
+					html += f'<td>{v:10}</td>'
+				else:
+					html += f'<td>{values[i]:10}</td>'
+			html += '</tr>'
+
+		if not only_head:
+			html += '<tr><strong><td>...</td></strong>'
+			for i in range(len(self.columns)):
+				html += '<td>...</td>'
+			html += '</tr>'
+			for i in range(-num_tail, 0):
+				html += f'<tr><td><strong>{len(self) + i}</strong></td>'
+				for col, values in self._data.items():
+					kind = values.dtype.kind
+					if kind == 'f':
+						html += f'<td>{values[i]:10.3f}</td>'
+					elif kind == 'b':
+						html += f'<td>{values[i]}</td>'
+					elif kind == 'O':
+						v = values[i]
+						if v is None:
+							v = 'None'
+						html += f'<td>{v:10}</td>'
+					else:
+						html += f'<td>{values[i]:10}</td>'
+				html += '</tr>'
+
+		html += '</tbody></table>'
+
+		return html
