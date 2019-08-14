@@ -113,3 +113,20 @@ class DataFrame:
 		"""
 
 		return (len(next(iter(self._data.values()))), len(self._data.keys()))
+
+	@property
+	def dtypes(self):
+		"""
+		Get types of all columns in dataframe
+
+		Returns
+		-------
+		DataFrame: Two columns dataframe of cols and their types
+		"""
+
+		data_types = []
+		for val in self._data.values():
+			data_types.append(val.dtype.kind)
+		
+		dtypes_dict = {'Column Name':np.array(self.columns), 'Data Type':np.array(data_types)}
+		return DataFrame(dtypes_dict)

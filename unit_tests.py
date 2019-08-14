@@ -1,6 +1,16 @@
 import numpy as np
 import pytest
+from numpy.testing import assert_array_equal, assert_allclose
 import analytica as alt
+
+def assert_df_equals(df1, df2):
+    assert df1.columns == df2.columns
+    for values1, values2 in zip(df1._data.values(), df2._data.values()):
+        kind = values1.dtype.kind
+        if kind == 'f':
+            assert_allclose(values1, values2)
+        else:
+            assert_array_equal(values1, values2)
 
 a = np.array(['a', 'b', 'c'])
 b = np.array(['c', 'd', None])
@@ -73,3 +83,12 @@ class TestDataFrameCreation:
 
     def test_shape(self):
         assert df.shape == (3, 5)
+    
+    def test_dtypes(self):
+        cols = np.array(['a', 'b', 'c', 'd', 'e'], dtype='O')
+        dtypes = np.array(['O', 'O', 'f', 'b', 'i'], dtype='O')
+
+        df_result = df.dtypes
+        df_answer = alt.DataFrame({'Column Name': cols,
+                                    'Data Type': dtypes})
+        assert_df_equals(df_result, df_answer)
