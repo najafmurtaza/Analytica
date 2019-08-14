@@ -130,3 +130,16 @@ class DataFrame:
 		
 		dtypes_dict = {'Column Name':np.array(self.columns), 'Data Type':np.array(data_types)}
 		return DataFrame(dtypes_dict)
+
+	@property
+	def values(self):
+		"""
+		Get all column values as 2D array
+
+		Returns
+		-------
+		ndarray: numpy 2d array of all column values in our dataframe
+		"""
+		
+		# Casting to list becuase using iterables in stack will be deprecated after numpy 1.16
+		return np.column_stack(list(self._data.values()))

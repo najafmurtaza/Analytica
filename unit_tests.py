@@ -92,3 +92,7 @@ class TestDataFrameCreation:
         df_answer = alt.DataFrame({'Column Name': cols,
                                     'Data Type': dtypes})
         assert_df_equals(df_result, df_answer)
+    
+    def test_values(self):
+        values = np.column_stack((a, b, c, d, e))
+        assert_array_equal(df.values, values)
