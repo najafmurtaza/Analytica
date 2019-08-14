@@ -86,11 +86,11 @@ class TestDataFrameCreation:
     
     def test_dtypes(self):
         cols = np.array(['a', 'b', 'c', 'd', 'e'], dtype='O')
-        dtypes = np.array(['O', 'O', 'f', 'b', 'i'], dtype='O')
-
-        df_result = df.dtypes
+        dtypes = np.array([a.astype('O').dtype, b.dtype, c.dtype, d.dtype, e.dtype], dtype='O')
+        
         df_answer = alt.DataFrame({'Column Name': cols,
                                     'Data Type': dtypes})
+        df_result = df.dtypes
         assert_df_equals(df_result, df_answer)
     
     def test_values(self):

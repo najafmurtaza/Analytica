@@ -126,7 +126,7 @@ class DataFrame:
 
 		data_types = []
 		for val in self._data.values():
-			data_types.append(val.dtype.kind)
+			data_types.append(val.dtype)
 		
 		dtypes_dict = {'Column Name':np.array(self.columns), 'Data Type':np.array(data_types)}
 		return DataFrame(dtypes_dict)
