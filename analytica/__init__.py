@@ -214,9 +214,12 @@ class DataFrame:
 
 		Params
 		------
-		str: a column name
-		list: a list of column names
-		DataFrame(Rows): DataFrame with boolean array for rows selction
+		str: a column name [Returns all rows from one selected column]
+		list: a list of column names [Returns all rows from list of columns]
+		DataFrame(Rows): DataFrame with boolean array for rows selction [Returns selected rows from all columns]
+		tuple: Two valued tuple, one for rows and other for columns
+				rows: `int` or `int list` or `slice` or `DataFrame`
+				cols: `int` or `string`
 
 		Returns
 		-------
@@ -244,4 +247,35 @@ class DataFrame:
 			for key, val in self._data.items():
 				data[key] = val[bool_ind]
 
+			return DataFrame(data)
+
+		if isinstance(item, tuple):
+			if len(item) != 2:
+				raise ValueError("Must pass two items, one for rows and other for cols")
+
+			row_ind = item[0]
+			col_ind = item[1]
+
+			if isinstance(row_ind, int):
+				rows = [row_ind]
+			elif isinstance(row_ind, DataFrame):
+				if len(row_ind.columns) != 1:
+					raise ValueError("Only 1 column should be provided")
+				rows = row_ind.values.flatten()
+				if rows.dtype.kind != 'b':
+					raise TypeError("Values should be of type `bool`")
+			elif isinstance(row_ind, list) or isinstance(row_ind, slice):
+				rows = row_ind
+			else:
+				raise TypeError("Rows index must be `int` or `int list` or `slice` or `DataFrame`")
+
+			if isinstance(col_ind, int):
+				cols = [self.columns[col_ind]]
+			elif isinstance(col_ind, str):
+				cols = [col_ind]
+			
+			data = {}
+			for col in cols:
+				data[col] = self._data[col][rows]
+			
 			return DataFrame(data)
