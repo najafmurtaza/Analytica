@@ -207,3 +207,41 @@ class DataFrame:
 		html += '</tbody></table>'
 
 		return html
+
+	def __getitem__(self, item):
+		"""
+		A python special function to get column values using bracket operator.
+
+		Params
+		------
+		str: a column name
+		list: a list of column names
+		DataFrame(Rows): DataFrame with boolean array for rows selction
+
+		Returns
+		-------
+		DataFrame: item column with values
+		"""
+
+		if isinstance(item, str):
+			return DataFrame({item:self._data[item]})
+
+		if isinstance(item, list):
+			data = {}
+			for col in item:
+				data[col] = self._data[col]
+			return DataFrame(data)
+		
+		if isinstance(item, DataFrame):
+			if len(item.columns) != 1:
+				raise ValueError("Only 1 column should be provided")
+			
+			bool_ind = item.values.flatten()
+			if bool_ind.dtype.kind != 'b':
+				raise TypeError("Values should be of type `bool`")
+			
+			data = {}
+			for key, val in self._data.items():
+				data[key] = val[bool_ind]
+
+			return DataFrame(data)
