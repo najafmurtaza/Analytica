@@ -11,7 +11,7 @@ class DataFrame:
 		Params
 		------
 		data: dict
-			dict with string keys and numpy 1D array as values
+			dict with str keys and numpy 1D array as values
 		"""
 
 		self._check_columns_type(data)
@@ -25,7 +25,7 @@ class DataFrame:
 		keys = data.keys()
 		for single_key in keys:
 			if not isinstance(single_key, str):
-				raise TypeError("Keys must be of type string")
+				raise TypeError("Keys must be of type str")
 		
 		values = data.values()
 		for single_val in values:
@@ -95,7 +95,7 @@ class DataFrame:
 
 		for i in columns:
 			if not isinstance(i, str):
-				raise TypeError("column name must be of type 'string'")
+				raise TypeError("column name must be of type 'str'")
 		
 		if len(columns) != len(set(columns)):
 			raise ValueError("All columns names must be unique")
@@ -219,7 +219,7 @@ class DataFrame:
 		DataFrame(Rows): DataFrame with boolean array for rows selction [Returns selected rows from all columns]
 		tuple: Two valued tuple, one for rows and other for columns
 				rows: `int` or `int list` or `slice` or `DataFrame`
-				cols: `int` or `string`
+				cols: `int` or `str` or `int/str/int+str list` or `int/str slice`
 
 		Returns
 		-------
@@ -229,13 +229,13 @@ class DataFrame:
 		if isinstance(item, str):
 			return DataFrame({item:self._data[item]})
 
-		if isinstance(item, list):
+		elif isinstance(item, list):
 			data = {}
 			for col in item:
 				data[col] = self._data[col]
 			return DataFrame(data)
 		
-		if isinstance(item, DataFrame):
+		elif isinstance(item, DataFrame):
 			if len(item.columns) != 1:
 				raise ValueError("Only 1 column should be provided")
 			
@@ -249,12 +249,11 @@ class DataFrame:
 
 			return DataFrame(data)
 
-		if isinstance(item, tuple):
+		elif isinstance(item, tuple):
 			if len(item) != 2:
 				raise ValueError("Must pass two items, one for rows and other for cols")
 
-			row_ind = item[0]
-			col_ind = item[1]
+			row_ind, col_ind = item
 
 			if isinstance(row_ind, int):
 				rows = [row_ind]
@@ -264,7 +263,7 @@ class DataFrame:
 				rows = row_ind.values.flatten()
 				if rows.dtype.kind != 'b':
 					raise TypeError("Values should be of type `bool`")
-			elif isinstance(row_ind, list) or isinstance(row_ind, slice):
+			elif isinstance(row_ind, (list, slice)):
 				rows = row_ind
 			else:
 				raise TypeError("Rows index must be `int` or `int list` or `slice` or `DataFrame`")
@@ -273,9 +272,34 @@ class DataFrame:
 				cols = [self.columns[col_ind]]
 			elif isinstance(col_ind, str):
 				cols = [col_ind]
-			
+			elif isinstance(col_ind, list):
+				cols = []
+				columns = self.columns
+				for ind in col_ind:
+					if isinstance(ind, int):
+						cols.append(columns[ind])
+					elif isinstance(ind, str):
+						cols.append(ind)
+					else:
+						raise TypeError("Columns can have either `str` or `int`")
+			elif isinstance(col_ind, slice):
+				start = col_ind.start
+				stop = col_ind.stop
+				step = col_ind.step
+
+				columns = self.columns
+				if isinstance(start, str) and isinstance(stop, str):
+					start = columns.index(start)
+					stop = columns.index(stop) + 1
+				cols = columns[start:stop:step]
+			else:
+				raise TypeError("Cols index must be `int` or `str` or `int/str/int+str list` or `int/str slice`")
+
 			data = {}
 			for col in cols:
 				data[col] = self._data[col][rows]
 			
 			return DataFrame(data)
+		
+		else:
+			raise TypeError("Must pass `str` or `list` or 'DataFrame` or `two items[row,col]`")
