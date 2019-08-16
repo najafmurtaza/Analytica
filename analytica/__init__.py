@@ -112,7 +112,7 @@ class DataFrame:
 		tuple: tuple of (Rows, cols)
 		"""
 
-		return (len(next(iter(self._data.values()))), len(self._data.keys()))
+		return (len(self), len(self.columns))
 
 	@property
 	def dtypes(self):
