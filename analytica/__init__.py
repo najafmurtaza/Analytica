@@ -214,8 +214,11 @@ class DataFrame:
 
 		Params
 		------
+		int: Returns selected row from all columns
 		str: a column name [Returns all rows from one selected column]
 		list: a list of column names [Returns all rows from list of columns]
+				OR list of `ints` [Returns selected rows from all columns]
+		slice(int): Returns selected rows from all columns
 		DataFrame(Rows): DataFrame with boolean array for rows selction [Returns selected rows from all columns]
 		tuple: Two valued tuple, one for rows and other for columns
 				rows: `int` or `int list` or `slice` or `DataFrame`
@@ -226,27 +229,40 @@ class DataFrame:
 		DataFrame: item column with values
 		"""
 
-		if isinstance(item, str):
+		if isinstance(item, int):
+			data = {}
+			for col in self.columns:
+				data[col] = self._data[col][[item]]
+			return DataFrame(data)
+		
+		elif isinstance(item, str):
 			return DataFrame({item:self._data[item]})
 
 		elif isinstance(item, list):
 			data = {}
-			for col in item:
-				data[col] = self._data[col]
+			if isinstance(item[0], str):
+				for col in item:
+					data[col] = self._data[col]
+			else:
+				for key, val in self._data.items():
+					data[key] = val[item]
 			return DataFrame(data)
-		
+
+		elif isinstance(item, slice):
+			data = {}
+			for key, val in self._data.items():
+				data[key] = val[item]
+			return DataFrame(data)
+			
 		elif isinstance(item, DataFrame):
 			if len(item.columns) != 1:
 				raise ValueError("Only 1 column should be provided")
-			
 			bool_ind = item.values.flatten()
 			if bool_ind.dtype.kind != 'b':
 				raise TypeError("Values should be of type `bool`")
-			
 			data = {}
 			for key, val in self._data.items():
 				data[key] = val[bool_ind]
-
 			return DataFrame(data)
 
 		elif isinstance(item, tuple):
@@ -302,4 +318,4 @@ class DataFrame:
 			return DataFrame(data)
 		
 		else:
-			raise TypeError("Must pass `str` or `list` or 'DataFrame` or `two items[row,col]`")
+			raise TypeError("Must pass `int` or `str` or `int/str list` `slice` or 'DataFrame` or `two items[row,col]`")
