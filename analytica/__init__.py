@@ -17,6 +17,7 @@ class DataFrame:
 		self._check_columns_type(data)
 		self._check_columns_length(data)
 		self._data = self._convert_unicode_to_object(data)
+		self._dtypes_char = self._get_char_dtypes(data)
 
 	def _check_columns_type(self, data):
 		if not isinstance(data, dict):
@@ -51,6 +52,13 @@ class DataFrame:
 
 		return converted_data
 
+	def _get_char_dtypes(self, data):
+		data_types_char = []
+		for val in self._data.values():
+			data_types_char.append(val.dtype.kind)
+			
+		return np.array(data_types_char, dtype='O')
+		
 	def __len__(self):
 		"""
 		An implementation of python special function.
@@ -319,3 +327,70 @@ class DataFrame:
 		
 		else:
 			raise TypeError("Must pass `int` or `str` or `int/str list` `slice` or 'DataFrame` or `two items[row,col]`")
+
+	def _aggregate_df(self, aggregate_func, axis, func_name):
+		if axis == 0:
+			data = {}
+			for key, val in self._data.items():
+				try:
+					data[key] = np.array([aggregate_func(val)])
+				except:
+					continue
+			
+			if len(data) > 0:
+				return DataFrame(data)
+			else:
+				return dict.fromkeys(self.columns)
+
+		elif axis == 1:
+			types_check = set(self._dtypes_char)
+			if (len(types_check) == 1) and (types_check.pop() == 'O'):
+				arr = self.values
+			else:
+				new_df = {}
+				for col in self.columns:
+					val = self._data[col]
+					if val.dtype.kind != 'O':
+						new_df[col] = val
+				new_df = DataFrame(new_df)
+				arr = new_df.values
+			try:
+				res = aggregate_func(arr, axis=axis)
+			except:
+				res = np.array([np.nan]*arr.shape[0])
+			return DataFrame({func_name: res})
+		
+		else:
+			raise ValueError("Axis can be either `0` or `1`")
+
+	def min(self, axis=0):
+		"""
+		Get minimum from DataFram rows or cols
+
+		params
+		------
+		int: 0 for column wise [Default]
+			 1 for row wise
+
+		Returns
+		-------
+		DataFrame: Minimum values
+		"""
+
+		return self._aggregate_df(np.nanmin, axis, "min")
+
+	def max(self, axis=0):
+		"""
+		Get maximum from DataFram rows or cols
+
+		params
+		------
+		int: 0 for column wise [Default]
+			 1 for row wise
+
+		Returns
+		-------
+		DataFrame: Maximum values
+		"""
+		
+		return self._aggregate_df(np.nanmax, axis, "max")

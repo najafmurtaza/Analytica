@@ -189,3 +189,42 @@ class TestSelection:
 
         with pytest.raises(TypeError):
             df[:, set()]
+
+a1 = np.array(['a', 'b', 'c'])
+b1 = np.array([11, 5, 8])
+c1 = np.array([3.4, np.nan, 5.1])
+df1 = alt.DataFrame({'a': a1, 'b': b1, 'c': c1})
+
+class TestAggregation:
+
+    def test_min(self):
+        df_result = df1.min()
+        df_answer = alt.DataFrame({'a': np.array(['a'], dtype='O'),
+                                   'b': np.array([5]),
+                                   'c': np.array([3.4])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1.min(axis=1)
+        df_answer = alt.DataFrame({'min': np.array([3.4, 5, 5.1])})
+        assert_df_equals(df_result, df_answer)
+
+        with pytest.raises(ValueError):
+            df1.min(axis=5)
+        with pytest.raises(ValueError):
+            df1.min(axis='1')
+
+    def test_max(self):
+        df_result = df1.max()
+        df_answer = alt.DataFrame({'a': np.array(['c'], dtype='O'),
+                                   'b': np.array([11]),
+                                   'c': np.array([5.1])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1.max(axis=1)
+        df_answer = alt.DataFrame({'max': np.array([11, 5, 8])})
+        assert_df_equals(df_result, df_answer)
+
+        with pytest.raises(ValueError):
+            df1.max(axis=5)
+        with pytest.raises(ValueError):
+            df1.max(axis='1')
