@@ -328,7 +328,7 @@ class DataFrame:
 		else:
 			raise TypeError("Must pass `int` or `str` or `int/str list` `slice` or 'DataFrame` or `two items[row,col]`")
 
-	def _aggregate_df(self, aggregate_func, axis=0, func_name=None):
+	def _aggregate_df(self, aggregate_func, axis=0,func_name=None, include_object=False):
 		if axis == 0:
 			data = {}
 			for key, val in self._data.items():
@@ -350,7 +350,7 @@ class DataFrame:
 				new_df = {}
 				for col in self.columns:
 					val = self._data[col]
-					if val.dtype.kind != 'O':
+					if val.dtype.kind != 'O' or include_object:
 						new_df[col] = val
 				new_df = DataFrame(new_df)
 				arr = new_df.values
@@ -496,7 +496,7 @@ class DataFrame:
 		DataFrame: Boolean values
 		"""
 
-		res = self._aggregate_df(np.all, axis, "all")
+		res = self._aggregate_df(np.all, axis, "all", True)
 		return self._convert_to_proper(res, axis, 'all')
 
 	def any(self, axis=0):
@@ -513,5 +513,5 @@ class DataFrame:
 		DataFrame: Boolean values
 		"""
 
-		res = self._aggregate_df(np.any, axis, "any")
+		res = self._aggregate_df(np.any, axis, "any", True)
 		return self._convert_to_proper(res, axis, 'any')
