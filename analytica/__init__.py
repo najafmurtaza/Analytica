@@ -457,3 +457,61 @@ class DataFrame:
 		DataFrame: Min row indexes
 		"""
 		return self._aggregate_df(np.nanargmin)
+
+	def _convert_to_proper(self, res, axis, key):
+		"""
+		As numpy's `all` and `all` are ambigous, sometimes they return `char` or `str`,
+		So this internal function will convert to proper `bool` format.
+		"""
+
+		if axis == 0:
+			for col, val in res._data.items():
+				if val != None:
+					res._data[col] = np.array([bool(val)])
+				else:
+					res._data[col] = np.array([True])
+		elif axis == 1:
+			values = next(iter(res._data.values()))
+			bool_res = []
+			for ind, val in enumerate(values):
+				if val != None:
+					bool_res.append(bool(val))
+				else:
+					bool_res.append(True)
+			res._data[key] = np.array(bool_res)
+			
+		return res
+
+	def all(self, axis=0):
+		"""
+		Check if all values are `true` or `false` from DataFrame rows or cols
+
+		params
+		------
+		int: 0 for column wise [Default]
+			 1 for row wise
+
+		Returns
+		-------
+		DataFrame: Boolean values
+		"""
+
+		res = self._aggregate_df(np.all, axis, "all")
+		return self._convert_to_proper(res, axis, 'all')
+
+	def any(self, axis=0):
+		"""
+		Check if any value is `true` or `false` from DataFrame rows or cols
+
+		params
+		------
+		int: 0 for column wise [Default]
+			 1 for row wise
+
+		Returns
+		-------
+		DataFrame: Boolean values
+		"""
+
+		res = self._aggregate_df(np.any, axis, "any")
+		return self._convert_to_proper(res, axis, 'any')

@@ -273,3 +273,25 @@ class TestAggregation:
                                    'b': np.array([1]),
                                    'c': np.array([0])})
         assert_df_equals(df_result, df_answer)
+
+    def test_all(self):
+        df_result = df1.all()
+        df_answer = alt.DataFrame({'a': np.array([True]),
+                                   'b': np.array([True]),
+                                   'c': np.array([True])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1.all(axis=1)
+        df_answer = alt.DataFrame({'all': np.array([True, True, True])})
+        assert_df_equals(df_result, df_answer)
+
+    def test_any(self):
+        df_result = df1.any()
+        df_answer = alt.DataFrame({'a': np.array([True]),
+                                   'b': np.array([True]),
+                                   'c': np.array([True])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1.any(axis=1)
+        df_answer = alt.DataFrame({'any': np.array([True, True, True])})
+        assert_df_equals(df_result, df_answer)
