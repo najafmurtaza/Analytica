@@ -228,3 +228,34 @@ class TestAggregation:
             df1.max(axis=5)
         with pytest.raises(ValueError):
             df1.max(axis='1')
+
+    def test_mean(self):
+        df_result = df1.mean()
+        df_answer = alt.DataFrame({'b': np.array([8.]),
+                                   'c': np.array([4.25])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1.mean(axis=1)
+        df_answer = alt.DataFrame({'mean': np.array([7.2, 5.0, 6.55])})
+        assert_df_equals(df_result, df_answer)
+
+    def test_median(self):
+        df_result = df1.median()
+        df_answer = alt.DataFrame({'b': np.array([8]),
+                                   'c': np.array([4.25])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1.median(axis=1)
+        df_answer = alt.DataFrame({'median': np.array([7.2, 5.0, 6.55])})
+        assert_df_equals(df_result, df_answer)
+
+    def test_sum(self):
+        df_result = df1.sum()
+        df_answer = alt.DataFrame({'a': np.array(['abc'], dtype='O'),
+                                   'b': np.array([24]),
+                                   'c': np.array([8.5])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1.sum(axis=1)
+        df_answer = alt.DataFrame({'sum': np.array([14.4, 5.0, 13.1])})
+        assert_df_equals(df_result, df_answer)

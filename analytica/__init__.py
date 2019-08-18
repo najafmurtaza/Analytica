@@ -340,7 +340,7 @@ class DataFrame:
 			if len(data) > 0:
 				return DataFrame(data)
 			else:
-				return dict.fromkeys(self.columns)
+				return []
 
 		elif axis == 1:
 			types_check = set(self._dtypes_char)
@@ -376,7 +376,6 @@ class DataFrame:
 		-------
 		DataFrame: Minimum values
 		"""
-
 		return self._aggregate_df(np.nanmin, axis, "min")
 
 	def max(self, axis=0):
@@ -392,5 +391,49 @@ class DataFrame:
 		-------
 		DataFrame: Maximum values
 		"""
-		
 		return self._aggregate_df(np.nanmax, axis, "max")
+
+	def mean(self, axis=0):
+		"""
+		Get mean from DataFram rows or cols
+
+		params
+		------
+		int: 0 for column wise [Default]
+			 1 for row wise
+
+		Returns
+		-------
+		DataFrame: Mean values
+		"""
+		return self._aggregate_df(np.nanmean, axis, 'mean')
+
+	def median(self, axis=0):
+		"""
+		Get median from DataFram rows or cols
+
+		params
+		------
+		int: 0 for column wise [Default]
+			 1 for row wise
+
+		Returns
+		-------
+		DataFrame: Median values
+		"""
+		return self._aggregate_df(np.nanmedian, axis, "median")
+
+	def sum(self, axis=0):
+		"""
+		Get sum from DataFram rows or cols
+
+		params
+		------
+		int: 0 for column wise [Default]
+			 1 for row wise
+
+		Returns
+		-------
+		DataFrame: Sum values
+		"""
+		return self._aggregate_df(np.nansum, axis, "sum")
