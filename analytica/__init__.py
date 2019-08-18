@@ -328,12 +328,15 @@ class DataFrame:
 		else:
 			raise TypeError("Must pass `int` or `str` or `int/str list` `slice` or 'DataFrame` or `two items[row,col]`")
 
-	def _aggregate_df(self, aggregate_func, axis=0,func_name=None, include_object=False):
+	def _aggregate_df(self, aggregate_func, axis=0,func_name=None, include_object=False, var_std=False):
 		if axis == 0:
 			data = {}
 			for key, val in self._data.items():
 				try:
-					data[key] = np.array([aggregate_func(val)])
+					if var_std: 
+						data[key] = np.array([aggregate_func(val, ddof=1)])
+					else:
+						data[key] = np.array([aggregate_func(val)])
 				except:
 					continue
 			
@@ -355,7 +358,10 @@ class DataFrame:
 				new_df = DataFrame(new_df)
 				arr = new_df.values
 			try:
-				res = aggregate_func(arr, axis=axis)
+				if var_std:
+					res = aggregate_func(arr, axis=axis, ddof=1)
+				else:
+					res = aggregate_func(arr, axis=axis)
 			except:
 				res = np.array([np.nan]*arr.shape[0])
 			return DataFrame({func_name: res})
@@ -515,3 +521,33 @@ class DataFrame:
 
 		res = self._aggregate_df(np.any, axis, "any", True)
 		return self._convert_to_proper(res, axis, 'any')
+
+	def var(self, axis=0):
+		"""
+		Get variance from DataFrame rows or cols
+
+		params
+		------
+		int: 0 for column wise [Default]
+			 1 for row wise
+
+		Returns
+		-------
+		DataFrame: Variance values
+		"""
+		return self._aggregate_df(np.nanvar, axis, "var", var_std=True)
+
+	def std(self, axis=0):
+		"""
+		Get Std. Dev from DataFrame rows or cols
+
+		params
+		------
+		int: 0 for column wise [Default]
+			 1 for row wise
+
+		Returns
+		-------
+		DataFrame: Std. Dev values
+		"""
+		return self._aggregate_df(np.nanstd, axis, "std", var_std=True)

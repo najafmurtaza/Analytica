@@ -295,3 +295,23 @@ class TestAggregation:
         df_result = df1.any(axis=1)
         df_answer = alt.DataFrame({'any': np.array([True, True, True])})
         assert_df_equals(df_result, df_answer)
+
+    def test_var(self):
+        df_result = df1.var()
+        df_answer = alt.DataFrame({'b': np.array([np.nanvar(b1, ddof=1)]),
+                                   'c': np.array([np.nanvar(c1, ddof=1)])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1.var(axis=1)
+        df_answer = alt.DataFrame({'var': np.array([28.88, np.nan, 4.205])})
+        assert_df_equals(df_result, df_answer)
+
+    def test_std(self):
+        df_result = df1.std()
+        df_answer = alt.DataFrame({'b': np.array([np.nanstd(b1, ddof=1)]),
+                                   'c': np.array([np.nanstd(c1, ddof=1)])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1.std(axis=1)
+        df_answer = alt.DataFrame({'std': np.array([5.37401154, np.nan, 2.05060967])})
+        assert_df_equals(df_result, df_answer)
