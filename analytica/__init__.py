@@ -328,7 +328,7 @@ class DataFrame:
 		else:
 			raise TypeError("Must pass `int` or `str` or `int/str list` `slice` or 'DataFrame` or `two items[row,col]`")
 
-	def _aggregate_df(self, aggregate_func, axis, func_name):
+	def _aggregate_df(self, aggregate_func, axis=0, func_name=None):
 		if axis == 0:
 			data = {}
 			for key, val in self._data.items():
@@ -437,3 +437,23 @@ class DataFrame:
 		DataFrame: Sum values
 		"""
 		return self._aggregate_df(np.nansum, axis, "sum")
+
+	def argmax(self):
+		"""
+		Get max row indexes from DataFrame
+
+		Returns
+		-------
+		DataFrame: Max row indexes
+		"""
+		return self._aggregate_df(np.nanargmax)
+
+	def argmin(self):
+		"""
+		Get min row indexes from DataFrame
+		
+		Returns
+		-------
+		DataFrame: Min row indexes
+		"""
+		return self._aggregate_df(np.nanargmin)

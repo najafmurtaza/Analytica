@@ -259,3 +259,17 @@ class TestAggregation:
         df_result = df1.sum(axis=1)
         df_answer = alt.DataFrame({'sum': np.array([14.4, 5.0, 13.1])})
         assert_df_equals(df_result, df_answer)
+
+    def test_argmax(self):
+        df_result = df1.argmax()
+        df_answer = alt.DataFrame({'a': np.array([2]),
+                                   'b': np.array([0]),
+                                   'c': np.array([2])})
+        assert_df_equals(df_result, df_answer)
+
+    def test_argmin(self):
+        df_result = df1.argmin()
+        df_answer = alt.DataFrame({'a': np.array([0]),
+                                   'b': np.array([1]),
+                                   'c': np.array([0])})
+        assert_df_equals(df_result, df_answer)
