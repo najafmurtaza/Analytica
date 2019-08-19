@@ -325,3 +325,15 @@ class TestOtherMethods:
                                    'b': np.array([False, False, True]),
                                    'c': np.array([False, True, False])})
         assert_df_equals(df_result, df_answer)
+
+    def test_head(self):
+        df_result = df.head(2)
+        df_answer = alt.DataFrame({'a': a[:2], 'b': b[:2], 'c': c[:2],
+                                   'd': d[:2], 'e': e[:2]})
+        assert_df_equals(df_result, df_answer)
+
+    def test_tail(self):
+        df_result = df.tail(2)
+        df_answer = alt.DataFrame({'a': a[-2:], 'b': b[-2:], 'c': c[-2:],
+                                   'd':d[-2:], 'e': e[-2:]})
+        assert_df_equals(df_result, df_answer)

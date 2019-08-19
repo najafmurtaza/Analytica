@@ -68,6 +68,7 @@ class DataFrame:
 		------
 		int: Total no. of rows in our dataframe
 		"""
+
 		values = self._data.values()
 		length = len(next(iter(values)))
 
@@ -82,7 +83,6 @@ class DataFrame:
 		-------
 		list: columns names as list
 		"""
-		
 		return list(self._data.keys())
 
 	@columns.setter
@@ -119,7 +119,6 @@ class DataFrame:
 		-------
 		tuple: tuple of (Rows, cols)
 		"""
-
 		return (len(self), len(self.columns))
 
 	@property
@@ -148,7 +147,6 @@ class DataFrame:
 		-------
 		ndarray: numpy 2d array of all column values in our dataframe
 		"""
-		
 		# Casting to list becuase using iterables in stack will be deprecated after numpy 1.16
 		return np.column_stack(list(self._data.values()))
 
@@ -373,7 +371,7 @@ class DataFrame:
 		"""
 		Get minimum from DataFram rows or cols
 
-		params
+		Params
 		------
 		int: 0 for column wise [Default]
 			 1 for row wise
@@ -388,7 +386,7 @@ class DataFrame:
 		"""
 		Get maximum from DataFram rows or cols
 
-		params
+		Params
 		------
 		int: 0 for column wise [Default]
 			 1 for row wise
@@ -403,7 +401,7 @@ class DataFrame:
 		"""
 		Get mean from DataFram rows or cols
 
-		params
+		Params
 		------
 		int: 0 for column wise [Default]
 			 1 for row wise
@@ -418,7 +416,7 @@ class DataFrame:
 		"""
 		Get median from DataFram rows or cols
 
-		params
+		Params
 		------
 		int: 0 for column wise [Default]
 			 1 for row wise
@@ -433,7 +431,7 @@ class DataFrame:
 		"""
 		Get sum from DataFram rows or cols
 
-		params
+		Params
 		------
 		int: 0 for column wise [Default]
 			 1 for row wise
@@ -492,7 +490,7 @@ class DataFrame:
 		"""
 		Check if all values are `true` or `false` from DataFrame rows or cols
 
-		params
+		Params
 		------
 		int: 0 for column wise [Default]
 			 1 for row wise
@@ -509,7 +507,7 @@ class DataFrame:
 		"""
 		Check if any value is `true` or `false` from DataFrame rows or cols
 
-		params
+		Params
 		------
 		int: 0 for column wise [Default]
 			 1 for row wise
@@ -526,7 +524,7 @@ class DataFrame:
 		"""
 		Get variance from DataFrame rows or cols
 
-		params
+		Params
 		------
 		int: 0 for column wise [Default]
 			 1 for row wise
@@ -541,7 +539,7 @@ class DataFrame:
 		"""
 		Get Std. Dev from DataFrame rows or cols
 
-		params
+		Params
 		------
 		int: 0 for column wise [Default]
 			 1 for row wise
@@ -570,3 +568,31 @@ class DataFrame:
 				new_df[col] = (val==None)
 
 		return DataFrame(new_df)
+
+	def head(self, n=5):
+		"""
+		Get first `n` rows from DataFrame
+
+		Params
+		------
+		int: No. of rows to get
+		
+		Returns
+		-------
+		DataFrame: First `n` rows from all columns
+		"""
+		return self[:n]
+
+	def tail(self, n=5):
+		"""
+		Get last `n` rows from DataFrame
+
+		Params
+		------
+		int: No. of rows to get
+		
+		Returns
+		-------
+		DataFrame: Last `n` rows from all columns
+		"""
+		return self[-n:]
