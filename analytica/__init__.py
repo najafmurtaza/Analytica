@@ -373,8 +373,8 @@ class DataFrame:
 
 		Params
 		------
-		int: 0 for column wise [Default]
-			 1 for row wise
+		int: 0 for row wise [Default]
+			 1 for column wise
 
 		Returns
 		-------
@@ -388,8 +388,8 @@ class DataFrame:
 
 		Params
 		------
-		int: 0 for column wise [Default]
-			 1 for row wise
+		int: 0 for row wise [Default]
+			 1 for column wise
 
 		Returns
 		-------
@@ -403,8 +403,8 @@ class DataFrame:
 
 		Params
 		------
-		int: 0 for column wise [Default]
-			 1 for row wise
+		int: 0 for row wise [Default]
+			 1 for column wise
 
 		Returns
 		-------
@@ -418,8 +418,8 @@ class DataFrame:
 
 		Params
 		------
-		int: 0 for column wise [Default]
-			 1 for row wise
+		int: 0 for row wise [Default]
+			 1 for column wise
 
 		Returns
 		-------
@@ -433,8 +433,8 @@ class DataFrame:
 
 		Params
 		------
-		int: 0 for column wise [Default]
-			 1 for row wise
+		int: 0 for row wise [Default]
+			 1 for column wise
 
 		Returns
 		-------
@@ -492,8 +492,8 @@ class DataFrame:
 
 		Params
 		------
-		int: 0 for column wise [Default]
-			 1 for row wise
+		int: 0 for row wise [Default]
+			 1 for column wise
 
 		Returns
 		-------
@@ -509,8 +509,8 @@ class DataFrame:
 
 		Params
 		------
-		int: 0 for column wise [Default]
-			 1 for row wise
+		int: 0 for row wise [Default]
+			 1 for column wise
 
 		Returns
 		-------
@@ -526,8 +526,8 @@ class DataFrame:
 
 		Params
 		------
-		int: 0 for column wise [Default]
-			 1 for row wise
+		int: 0 for row wise [Default]
+			 1 for column wise
 
 		Returns
 		-------
@@ -541,8 +541,8 @@ class DataFrame:
 
 		Params
 		------
-		int: 0 for column wise [Default]
-			 1 for row wise
+		int: 0 for row wise [Default]
+			 1 for column wise
 
 		Returns
 		-------
