@@ -110,6 +110,39 @@ class DataFrame:
 
 		self._data = dict(zip(columns, self._data.values()))
 
+	def rename(self, cols_dict):
+		"""
+		Rename selected cols names
+
+		Params
+		------
+		dict: key(old col), value(new col)
+
+		Returns
+		-------
+		DataFrame: DataFrame with new cols names
+		"""
+
+		if not isinstance(cols_dict, dict):
+			raise TypeError("New cols should be dict, mapping old to new col")
+
+		old_cols = self.columns
+		new_cols = cols_dict.keys()
+		for col in new_cols:
+			if col not in old_cols:
+				raise ValueError(f"Column {col} doesn't exist in DataFrame")
+
+		data = {}
+		for col in old_cols:
+			if col in new_cols:
+				new_name = cols_dict[col]
+				if not isinstance(new_name, str):
+					raise TypeError(f"New column name {new_name} should be of type `str`")
+				data[new_name] = self._data[col]
+			else:
+				data[col] = self._data[col]
+		return DataFrame(data)
+
 	@property
 	def shape(self):
 		"""
@@ -345,13 +378,13 @@ class DataFrame:
 
 		elif axis == 1:
 			types_check = set(self._dtypes_char)
-			if (len(types_check) == 1) and (types_check.pop() == 'O'):
+			if ((len(types_check) == 1) and (types_check.pop() == 'O'))  or include_object:
 				arr = self.values
 			else:
 				new_df = {}
 				for col in self.columns:
 					val = self._data[col]
-					if val.dtype.kind != 'O' or include_object:
+					if val.dtype.kind != 'O':
 						new_df[col] = val
 				new_df = DataFrame(new_df)
 				arr = new_df.values

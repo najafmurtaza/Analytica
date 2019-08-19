@@ -80,6 +80,17 @@ class TestDataFrameCreation:
         # set it back
         df.columns = ['a', 'b', 'c', 'd', 'e']
         assert df.columns == ['a', 'b', 'c', 'd', 'e']
+    
+    def test_rename(self):
+        df_result = df.rename({'a': 'A', 'c': 'C'})
+        df_answer = alt.DataFrame({'A': a, 'b': b, 'C': c, 'd': d, 'e': e})
+        assert_df_equals(df_result, df_answer)
+
+        with pytest.raises(ValueError):
+            df.rename({'w': 'A', 'c': 'C'})
+        
+        with pytest.raises(TypeError):
+            df.rename({'a': 'A', 'c': 1})
 
     def test_shape(self):
         assert df.shape == (3, 5)
