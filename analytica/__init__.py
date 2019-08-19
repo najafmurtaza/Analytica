@@ -369,7 +369,7 @@ class DataFrame:
 
 	def min(self, axis=0):
 		"""
-		Get minimum from DataFram rows or cols
+		Get minimum from DataFrame rows or cols
 
 		Params
 		------
@@ -384,7 +384,7 @@ class DataFrame:
 
 	def max(self, axis=0):
 		"""
-		Get maximum from DataFram rows or cols
+		Get maximum from DataFrame rows or cols
 
 		Params
 		------
@@ -399,7 +399,7 @@ class DataFrame:
 
 	def mean(self, axis=0):
 		"""
-		Get mean from DataFram rows or cols
+		Get mean from DataFrame rows or cols
 
 		Params
 		------
@@ -414,7 +414,7 @@ class DataFrame:
 
 	def median(self, axis=0):
 		"""
-		Get median from DataFram rows or cols
+		Get median from DataFrame rows or cols
 
 		Params
 		------
@@ -429,7 +429,7 @@ class DataFrame:
 
 	def sum(self, axis=0):
 		"""
-		Get sum from DataFram rows or cols
+		Get sum from DataFrame rows or cols
 
 		Params
 		------
@@ -596,3 +596,32 @@ class DataFrame:
 		DataFrame: Last `n` rows from all columns
 		"""
 		return self[-n:]
+
+	def count(self, axis=0):
+		"""
+		Get count of non-missing values from rows or cols
+
+		Params
+		------
+		int: 0 for row wise [Default]
+			 1 for column wise
+
+		Returns
+		-------
+		DataFrame: Counts
+		"""
+
+		bool_df = self.isna()
+		if axis == 0:
+			data = {}
+			for col, val in bool_df._data.items():
+				data[col] = np.array([np.sum(~val)])
+			return DataFrame(data)
+
+		elif axis == 1:
+			arr = ~bool_df.values
+			res = np.sum(arr, axis=1)
+			return DataFrame({"count": res})
+		
+		else:
+			raise ValueError("Axis can be either `0` or `1`")

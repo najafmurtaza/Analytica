@@ -337,3 +337,14 @@ class TestOtherMethods:
         df_answer = alt.DataFrame({'a': a[-2:], 'b': b[-2:], 'c': c[-2:],
                                    'd':d[-2:], 'e': e[-2:]})
         assert_df_equals(df_result, df_answer)
+
+    def test_count(self):
+        df_result = df3.count()
+        df_answer = alt.DataFrame({'a': np.array([3]),
+                                   'b': np.array([2]),
+                                   'c': np.array([2])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df3.count(axis=1)
+        df_answer = alt.DataFrame({'count': np.array([3,2,2])})
+        assert_df_equals(df_result, df_answer)
