@@ -551,3 +551,22 @@ class DataFrame:
 		DataFrame: Std. Dev values
 		"""
 		return self._aggregate_df(np.nanstd, axis, "std", var_std=True)
+
+	def isna(self):
+		"""
+		Check all values of DataFrame whether they are `None` or `NaN`
+
+		Returns
+		-------
+		DataFrame: Same shape as of original but boolean values
+		"""
+
+		new_df = {}
+		for col in self.columns:
+			val = self._data[col]
+			if val.dtype.kind != 'O':
+				new_df[col] = np.isnan(val)
+			else:
+				new_df[col] = (val==None)
+
+		return DataFrame(new_df)

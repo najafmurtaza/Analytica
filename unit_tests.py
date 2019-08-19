@@ -315,3 +315,13 @@ class TestAggregation:
         df_result = df1.std(axis=1)
         df_answer = alt.DataFrame({'std': np.array([5.37401154, np.nan, 2.05060967])})
         assert_df_equals(df_result, df_answer)
+
+df3 = alt.DataFrame({'a':a, 'b':b, 'c':c1})
+class TestOtherMethods:
+
+    def test_isna(self):
+        df_result = df3.isna()
+        df_answer = alt.DataFrame({'a': np.array([False, False, False]),
+                                   'b': np.array([False, False, True]),
+                                   'c': np.array([False, True, False])})
+        assert_df_equals(df_result, df_answer)
