@@ -201,6 +201,71 @@ class TestSelection:
         with pytest.raises(TypeError):
             df[:, set()]
 
+    def test_new_column(self):
+        df_result = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e})
+        f = np.array([1.5, 23, 4.11])
+        df_result['f'] = f
+        df_answer = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e, 'f': f})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e})
+        df_result['f'] = True
+        f = np.repeat(True, 3)
+        df_answer = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e, 'f': f})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e})
+        f = np.array([1.5, 23, 4.11])
+        df_result['c'] = f
+        df_answer = alt.DataFrame({'a': a, 'b': b, 'c': f, 'd': d, 'e': e})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e})
+        f = [1.5, 23, 4.11]
+        df_result['f'] = f
+        df_answer = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e, 'f': np.array(f)})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e})
+        df_result[1,'a'] = 'f'
+        w = a.copy()
+        w[1] = 'f'
+        df_answer = alt.DataFrame({'a': w, 'b': b, 'c': c, 'd': d, 'e': e})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e})
+        df_result[[1,2],'c'] = 1.2
+        w = c.copy()
+        w[[1,2]] = 1.2
+        df_answer = alt.DataFrame({'a': a, 'b': b, 'c': w, 'd': d, 'e': e})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = alt.DataFrame({'a': a, 'b': b, 'c': c, 'd': d, 'e': e})
+        df_result[1:3,'c'] = 1.2
+        w = c.copy()
+        w[[1,2]] = 1.2
+        df_answer = alt.DataFrame({'a': a, 'b': b, 'c': w, 'd': d, 'e': e})
+        assert_df_equals(df_result, df_answer)
+
+        with pytest.raises(TypeError):
+            df[1] = 5
+        with pytest.raises(TypeError):
+            df['a'] = df
+        with pytest.raises(ValueError):
+            df['a'] = [5,8]
+        with pytest.raises(ValueError):
+            df['a'] = [[5,8,6],[5,8,8],[5,8,8]]
+        with pytest.raises(ValueError):
+            df['a'] = np.array([[5,8,6],[5,8,8],[5,8,8]])
+        with pytest.raises(ValueError):
+            df['a'] = np.array([5,6])
+        with pytest.raises(TypeError):
+            df[1,df] = 6
+        with pytest.raises(TypeError):
+            df[df,'a'] = 'v'
+        with pytest.raises(TypeError):
+            df[2,1] = 6
+
 a1 = np.array(['a', 'b', 'c'])
 b1 = np.array([11, 5, 8])
 c1 = np.array([3.4, np.nan, 5.1])

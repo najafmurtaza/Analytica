@@ -17,7 +17,6 @@ class DataFrame:
 		self._check_columns_type(data)
 		self._check_columns_length(data)
 		self._data = self._convert_unicode_to_object(data)
-		self._dtypes_char = self._get_char_dtypes(data)
 
 	def _check_columns_type(self, data):
 		if not isinstance(data, dict):
@@ -51,13 +50,6 @@ class DataFrame:
 				converted_data[key] = data[key]
 
 		return converted_data
-
-	def _get_char_dtypes(self, data):
-		data_types_char = []
-		for val in self._data.values():
-			data_types_char.append(val.dtype.kind)
-			
-		return np.array(data_types_char, dtype='O')
 		
 	def __len__(self):
 		"""
@@ -359,7 +351,66 @@ class DataFrame:
 		else:
 			raise TypeError("Must pass `int` or `str` or `int/str list` `slice` or 'DataFrame` or `two items[row,col]`")
 
-	def _aggregate_df(self, aggregate_func, axis=0,func_name=None, include_object=False, var_std=False):
+	def __setitem__(self, key, val):
+		"""
+		A python special function to set column values using bracket operator.
+
+		Params
+		------
+		key: `str` or `tuple`
+			str: col name
+			tuple: Two valued tuple, one for rows and other for column
+					rows: `int` or `int list` or `slice`
+					col: `str`
+		val: `list` or `ndarray` or `int` or `float` or `str` or `bool`
+
+		Note: Incase of tuple `val` should be `int` or `float` or `str` or `bool`.
+		"""
+
+		if not isinstance(key, (str,tuple)):
+			raise TypeError(f"Column Name {key} should be `str` or both `[row,col]`")
+		if isinstance(key, tuple):
+			if not isinstance(val, (int,float,bool,str)):
+				raise TypeError(f"Value {val} should be of type `int` or `float` or `str` or `bool`")
+			row, col = key
+			if not isinstance(col, str):
+				raise TypeError(f"Column Name {col} should be of type `str`")
+			if isinstance(row, (int,list,slice)):
+				self._data[col][row] = val
+				return
+			else:
+				raise TypeError(f"Row {row} should be `int` or `list` or `slice`")
+
+		length = len(self)
+		if isinstance(val, (int,float,str,bool)):
+			arr = np.tile(val, length)
+		elif isinstance(val, list):
+			if len(val) != length:
+				raise ValueError(f"Length of list should be equal to original length {length}")
+			arr = np.array(val)
+			if arr.ndim != 1:
+				raise ValueError("Value must be 1D list")
+		elif isinstance(val, np.ndarray):
+			if val.ndim != 1:
+				raise ValueError("Value must be numpy 1D array")
+			if val.shape[0] != length:
+				raise ValueError(f"Length of array should be equal to original length {length}")
+			arr = val
+		else:
+			raise TypeError("value should be `list` or `ndarray` or `int` or `float` or `str` or `bool`")
+		if arr.dtype.kind == 'U':
+			arr = arr.astype('O')
+	
+		self._data[key] = arr
+	
+	def _get_char_dtypes(self, data):
+		data_types_char = []
+		for val in self._data.values():
+			data_types_char.append(val.dtype.kind)
+			
+		return np.array(data_types_char, dtype='O')
+
+	def _aggregate_df(self, aggregate_func, axis=0,func_name=None, any_all=False, var_std=False):
 		if axis == 0:
 			data = {}
 			for key, val in self._data.items():
@@ -377,8 +428,8 @@ class DataFrame:
 				return []
 
 		elif axis == 1:
-			types_check = set(self._dtypes_char)
-			if ((len(types_check) == 1) and (types_check.pop() == 'O'))  or include_object:
+			types_check = set(self._get_char_dtypes(self._data))
+			if ((len(types_check) == 1) and (types_check.pop() == 'O'))  or any_all:
 				arr = self.values
 			else:
 				new_df = {}
