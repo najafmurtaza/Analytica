@@ -402,6 +402,76 @@ class DataFrame:
 			arr = arr.astype('O')
 	
 		self._data[key] = arr
+
+	def _airth_operation(self, func_key, val):
+		data = {}
+		for col, arr in self._data.items():
+			dtype = arr.dtype.kind
+			if dtype == 'O':
+				arr_copy = arr.copy()
+				ind = (arr_copy == None)
+				arr_copy[ind] = str(None)
+				arr = arr_copy
+			func = getattr(arr, func_key)
+			data[col] = func(val)
+			if dtype == 'O':
+				data[col][ind] = None
+
+		return DataFrame(data)
+
+	def __add__(self, val):
+		return self._airth_operation('__add__', val)
+
+	def __radd__(self, val):
+		return self._airth_operation('__radd__', val)
+
+	def __sub__(self, val):
+		return self._airth_operation('__sub__', val)
+
+	def __rsub__(self, val):
+		return self._airth_operation('__rsub__', val)
+
+	def __mul__(self, val):
+		return self._airth_operation('__mul__', val)
+
+	def __rmul__(self, val):
+		return self._airth_operation('__rmul__', val)
+
+	def __truediv__(self, val):
+		return self._airth_operation('__truediv__', val)
+
+	def __rtruediv__(self, val):
+		return self._airth_operation('__rtruediv__', val)
+
+	def __floordiv__(self, val):
+		return self._airth_operation('__floordiv__', val)
+
+	def __rfloordiv__(self, val):
+		return self._airth_operation('__rfloordiv__', val)
+
+	def __pow__(self, val):
+		return self._airth_operation('__pow__', val)
+
+	def __rpow__(self, val):
+		return self._airth_operation('__rpow__', val)
+
+	def __gt__(self, val):
+		return self._airth_operation('__gt__', val)
+
+	def __lt__(self, val):
+		return self._airth_operation('__lt__', val)
+
+	def __ge__(self, val):
+		return self._airth_operation('__ge__', val)
+
+	def __le__(self, val):
+		return self._airth_operation('__le__', val)
+
+	def __eq__(self, val):
+		return self._airth_operation('__eq__', val)
+
+	def __ne__(self, val):
+		return self._airth_operation('__ne__', val)
 	
 	def _get_char_dtypes(self, data):
 		data_types_char = []
