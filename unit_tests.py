@@ -509,3 +509,14 @@ class TestOtherMethods:
         df_result = df3.count(axis=1)
         df_answer = alt.DataFrame({'count': np.array([3,2,2])})
         assert_df_equals(df_result, df_answer)
+
+    def test_csv(self):
+        df_result = alt.read_csv('./data/PizzaData.csv')
+        assert df_result.columns == ['id','address','categories','city','country','keys','latitude','longitude','menuPageURL','menus.amountMax','menus.amountMin','menus.currency','menus.dateSeen','menus.description','menus.name','name','postalCode','priceRangeCurrency','priceRangeMin','priceRangeMax','province']
+        assert df_result.shape == (3510,21)
+
+        df_result = alt.read_csv('./data/PizzaData.csv', header=False)
+        assert df_result.shape == (3511,21)
+        
+        with pytest.raises(TypeError):
+            alt.read_csv('./data/PizzaData.csv', header=45)

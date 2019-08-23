@@ -1,6 +1,48 @@
 __version__ = '0.0.1'
 
 import numpy as np
+from csv import reader
+
+def read_csv(path, header=True):
+	"""
+	Read given CSV file and create DataFrame
+
+	Params
+	------
+	path: str
+		path to file
+	header: bool
+		True: Treat first row as column names and rest as data
+		False: Treat all rows as data
+
+	Returns
+	-------
+	DataFrame: A DataFrame object of data
+	"""
+
+	if not isinstance(header, bool):
+		raise TypeError("Header should be either `True` or `False`")
+
+	with open(path, 'r') as f:
+		data = f.readlines()
+	
+	data = list(reader(data))
+	total_cols = len(data[0])
+	if header:
+		columns = data[0]
+		data = data[1:]
+	else:
+		columns = [i for i in range(total_cols)]
+
+	arr2d = [[] for i in range(total_cols)]
+	for line in data:
+		for ind, word in enumerate(line):
+			arr2d[ind].append(word)
+
+	data = {}
+	for i in range(total_cols):
+		data[str(columns[i])] = np.array(arr2d[i])
+	return DataFrame(data)
 
 class DataFrame:
 
