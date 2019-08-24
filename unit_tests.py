@@ -520,3 +520,22 @@ class TestOtherMethods:
         
         with pytest.raises(TypeError):
             alt.read_csv('./data/PizzaData.csv', header=45)
+
+    def test_sample(self):
+        df_result = df3.sample(2, seed=1)
+        df_answer = alt.DataFrame({'a': np.array(['a', 'c'], dtype=object),
+                                   'b': np.array(['c', None]),
+                                   'c': np.array([3.4, 5.1])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df3.sample(frac=.7, seed=1)
+        df_answer = alt.DataFrame({'a': np.array(['a', 'c', 'b'], dtype=object),
+                                   'b': np.array(['c', None, 'd']),
+                                   'c': np.array([3.4, 5.1, np.nan])})
+        assert_df_equals(df_result, df_answer)
+
+        with pytest.raises(TypeError):
+            df.sample(2.5)
+
+        with pytest.raises(ValueError):
+            df.sample(frac=-2)

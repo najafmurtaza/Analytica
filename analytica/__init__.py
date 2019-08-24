@@ -2,6 +2,7 @@ __version__ = '0.0.1'
 
 import numpy as np
 from csv import reader
+import math
 
 def read_csv(path, header=True):
 	"""
@@ -821,3 +822,38 @@ class DataFrame:
 		
 		else:
 			raise ValueError("Axis can be either `0` or `1`")
+
+	def sample(self, n=1, frac=None, seed=None, replace=False):
+		"""
+		Sample rows from DataFrame
+
+		Params
+		------
+		n: int
+			No. of elements to sample
+			if `frac` is passed, this number would be ignored
+		frac: float
+			Fraction of rows to sample
+		seed: int, seeder
+			Seed for random number
+		replace: bool
+			Sample with or without replacement
+
+		Returns
+		-------
+		DataFrame: A new DataFrame of Sampled rows
+		"""
+
+		if not isinstance(n, int):
+			raise TypeError("`n` should be of type `int`")
+		if frac != None and frac <= 0.0:
+			raise ValueError("`frac` should be greater than `0.0` and less,equal to `1.0`")
+		elif frac != None and (frac > 1.0 and replace == False):
+			raise ValueError("Cannot take a larger sample than population when 'replace=False'")
+
+		if frac:
+			n = math.ceil(len(self) * frac)
+		np.random.seed(seed=seed)
+		ind = list(np.random.choice(len(self), size=n, replace=replace))
+
+		return self[ind]
