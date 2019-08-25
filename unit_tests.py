@@ -539,3 +539,24 @@ class TestOtherMethods:
 
         with pytest.raises(ValueError):
             df.sample(frac=-2)
+
+    def test_unique(self):
+        df_result = df1.unique()
+        assert_array_equal(df_result['a'], np.array(list(dict.fromkeys(a1)), dtype='O'))
+        assert_array_equal(df_result['b'], np.array(list(dict.fromkeys(b1))))
+        assert_array_equal(df_result['c'], np.array(list(dict.fromkeys(c1))))
+
+
+        df_result = df1['c'].unique()
+        assert_array_equal(df_result.values[:, 0], np.array(list(dict.fromkeys(c1))))
+
+    def test_nunique(self):
+        df_result = df1.nunique()
+        df_answer = alt.DataFrame({'a': np.array([3]),
+                                   'b': np.array([3]),
+                                   'c': np.array([3])})
+        assert_df_equals(df_result, df_answer)
+
+        df_result = df1['c'].nunique()
+        df_answer = alt.DataFrame({'c': np.array([3])})
+        assert_df_equals(df_result, df_answer)

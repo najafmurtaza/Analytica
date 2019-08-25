@@ -857,3 +857,42 @@ class DataFrame:
 		ind = list(np.random.choice(len(self), size=n, replace=replace))
 
 		return self[ind]
+
+	def unique(self):
+		"""
+		Get unique values in a DataFrame columns
+
+		Returns
+		-------
+		dict: If DataFrame has more than one columns
+		DataFrame: If DataFrame has only one column
+		"""
+		
+		data = {}
+		for key, val in self._data.items():
+			if val.dtype.kind == 'O':
+				data[key] = np.array(list(dict.fromkeys(val)), dtype='O')
+			else:
+				data[key] = np.array(list(dict.fromkeys(val)))
+		
+		if self.shape[1] == 1:
+			return DataFrame(data)
+		return data
+
+	def nunique(self):
+		"""
+		Get count of unique values including `None` or `NaN` in all columns of DataFrame
+
+		Returns
+		-------
+		DataFrame: Count of unique values per column
+		"""
+
+		unique_vals = self.unique()
+		if isinstance(unique_vals, DataFrame):
+			unique_vals = unique_vals._data
+
+		data = {}
+		for key, val in unique_vals.items():
+			data[key] = np.array([val.size])
+		return DataFrame(data)
